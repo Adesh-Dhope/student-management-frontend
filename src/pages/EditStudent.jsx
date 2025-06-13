@@ -1,75 +1,94 @@
-import React, { useState } from "react";
-import RecordData from "./RecordData";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { createStudent } from "../redux/slices/studentSlice";
-import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchStudents, updateStudent } from '../redux/slices/studentSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
-const Registration = () => {
-  const dispatch = useDispatch();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+const EditStudent = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+      const { id } = useParams();
+      const {enqueueSnackbar} = useSnackbar()
+console.log('id',id)
+    const { students } = useSelector((state) => state.students);
+console.log('students',students)
 
-  const [reloadData, setReloadData] = useState(false);
-
+  const student = students.find((item) => item.id === Number(id));
+console.log('student',student)
   const [rollNo, setRollNo] = useState("");
   const [fullName, setFullName] = useState("");
   const [motherName, setMotherName] = useState("");
   const [dob, setDOB] = useState("");
   const [address, setAddress] = useState("");
-  const [sex, SetSex] = useState("");
-  const [bloodGroup, SetBloodGroup] = useState("");
+  const [sex, setSex] = useState("");
+  const [bloodGroup, setBloodGroup] = useState("");
+
+  useEffect(() => {
+    if (student) {
+      setRollNo(student.rollNo);
+      setFullName(student.fullName);
+      setMotherName(student.motherName);
+      setDOB(student.dob);
+      setAddress(student.address);
+      setSex(student.sex);
+      setBloodGroup(student.bloodGroup);
+    }
+  }, [student]);
 
   const handleSubmit = async () => {
-    if (
-      !rollNo &&
-      !fullName &&
-      !motherName &&
-      !dob &&
-      !address &&
-      !bloodGroup &&
-      !sex
-    ) {
-      enqueueSnackbar("fill all fields", {
-        variant: "error",
-        autoHideDuration: 1500,
-      });
-      return;
-    }
-    const Data = {
-      rollNo: rollNo,
-      fullName: fullName,
-      motherName: motherName,
-      dob: dob,
-      address: address,
-      bloodGroup: bloodGroup,
-      sex: sex,
+      if (
+        !rollNo &&
+        !fullName &&
+        !motherName &&
+        !dob &&
+        !address &&
+        !bloodGroup &&
+        !sex
+      ) {
+        enqueueSnackbar("fill all fields", {
+          variant: "error",
+          autoHideDuration: 1500,
+        });
+        return;
+      }
+      const updatedData = {
+        rollNo: rollNo,
+        fullName: fullName,
+        motherName: motherName,
+        dob: dob,
+        address: address,
+        bloodGroup: bloodGroup,
+        sex: sex,
+      };
+  
+      try {
+        console.log('Data',updatedData)
+        await dispatch(updateStudent({id,updatedData}));
+        console.log("data sent to backend");
+        enqueueSnackbar("Student updated Successfully", {
+          variant: "success",
+          autoHideDuration: 1500,
+        });
+        navigate('/recorddata')
+        await dispatch(fetchStudents())
+        // setReloadData((prev) => !prev);
+      } catch (error){
+        console.error("error occured while sending data to backend", error);
+      }
+  
+      setRollNo("");
+      setFullName("");
+      setMotherName("");
+      setDOB("");
+      setAddress("");
+      setSex("");
+      setBloodGroup("");
     };
-
-    try {
-      await dispatch(createStudent(Data));
-      console.log("data sent to backend");
-      enqueueSnackbar("Student Added Successfully", {
-        variant: "success",
-        autoHideDuration: 1500,
-      });
-      setReloadData((prev) => !prev);
-    } catch {
-      console.error("error occured while sending data to backend");
-    }
-
-    setRollNo("");
-    setFullName("");
-    setMotherName("");
-    setDOB("");
-    setAddress("");
-    SetSex("");
-    SetBloodGroup("");
-  };
-
+  
   return (
-    <div>
+ <div>
       <div className="text-[2rem] font-bold pl-4 bg-blue-400 rounded-md">
-        <h1 className="text-xxl">Add Student Details</h1>
+        <h1 className="text-xxl">Edit Student Details</h1>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-4 pb-6">
         <div className="flex flex-col">
@@ -121,7 +140,7 @@ const Registration = () => {
           <input
             type="text"
             value={bloodGroup}
-            onChange={(e) => SetBloodGroup(e.target.value)}
+            onChange={(e) => setBloodGroup(e.target.value)}
             placeholder="enter blood group"
             required
             className="border-2 border-gray-800 rounded-xs p-1.5 w-[50%] xs:w-[100%]"
@@ -143,7 +162,7 @@ const Registration = () => {
           <input
             type="text"
             value={sex}
-            onChange={(e) => SetSex(e.target.value)}
+            onChange={(e) => setSex(e.target.value)}
             placeholder="enter sex"
             required
             className="border-2 border-gray-800 rounded-xs p-1.5 w-[50%] xs:w-[100%]"
@@ -158,9 +177,8 @@ const Registration = () => {
           </button>
         </div>
       </div>
-      <RecordData reloadData={reloadData} />
     </div>
-  );
-};
+  )
+}
 
-export default Registration;
+export default EditStudent
