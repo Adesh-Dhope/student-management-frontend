@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchStudents } from "../redux/slices/studentSlice";
+import { deleteStudent, fetchStudents } from "../redux/slices/studentSlice";
 import { ClipboardX, ClipboardPen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 const RecordData = ({ reloadData }) => {
 
   const navigate = useNavigate();
-
+const {enqueueSnackbar} = useSnackbar()
   const dispatch = useDispatch();
   const { students } = useSelector((state) => state.students);
   const [studentData, setStudentData] = useState([]);
@@ -39,8 +40,8 @@ const RecordData = ({ reloadData }) => {
 };
 
   return (
-    <div className="w-full">
-      <div className="font-bold bg-blue-400 pl-4 rounded-sm">
+    <div className="w-full pt-2">
+      <div className="font-bold bg-blue-400 pl-4 rounded-md">
         <h1 className="text-[2rem]">Student List</h1>
       </div>
       <div className="pt-3">
@@ -60,7 +61,7 @@ const RecordData = ({ reloadData }) => {
               <th className="border-[1px] border-gray-800 w-[16%]">Address</th>
               <th className="border-[1px] border-gray-800 w-[6%]">View</th>
               <th className="border-[1px] border-gray-800 w-[6%]">Edit</th>
-              <th className="border-[1px] border-gray-800 w-[6%]">Delete</th>
+              <th className="border-[1px] border-gray-800 w-[6%] truncate">Delete</th>
             </tr>
           </thead>
           <tbody className="border-[1px] border-gray-800">

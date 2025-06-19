@@ -4,6 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RecordData from '../pages/RecordData';
 import App from '../App';
 import EditStudent from '../pages/EditStudent';
+import StudentMarksheet from './../pages/StudentMarksheet';
+import PassSheet from '../pages/PassSheet';
+import StudentDetails from '../pages/StudentDetails';
+import StudentData from '../components/student/studentData';
 const AppRoutes = () => {
   
   return (
@@ -14,7 +18,10 @@ const AppRoutes = () => {
         <Route path="registration" element={<Registration />} />
         <Route path="recorddata" element={<RecordData />} />
         <Route path="recorddata/edit/:id" element={<EditStudent />} />
-
+        <Route path="marksheet" element={<StudentMarksheet />}/>
+        <Route path="passsheet" element={<PassSheet />} />
+        <Route path='details' element={<StudentDetails/>} />
+        <Route path='student' element={<StudentData />} />
       </Route>
     </Routes>
 

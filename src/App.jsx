@@ -23,7 +23,7 @@ function App() {
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} menuItems={menuItems} />
 
       {/* Page Content */}
-      <div className="flex-1 overflow-auto pt-4 md:pt-0 px-6">
+      <div className="flex-1 overflow-auto  md:pt-0 px-6">
         <Outlet />
       </div>
     </div>
